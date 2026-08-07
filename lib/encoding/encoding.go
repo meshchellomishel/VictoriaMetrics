@@ -174,6 +174,13 @@ func unmarshalInt64Array(dst []int64, src []byte, mt MarshalType, firstValue int
 	// Extend dst capacity in order to eliminate memory allocations below.
 	dst = decimal.ExtendInt64sCapacity(dst, itemsCount)
 
+	switch mt {
+	case MarshalTypeZSTDNearestDelta, MarshalTypeZSTDNearestDelta2, MarshalTypeNearestDelta, MarshalTypeNearestDelta2:
+		if itemsCount < 2 {
+			return nil, fmt.Errorf("itemsCount must be at least 2 for marshal type %d; got %d", mt, itemsCount)
+		}
+	}
+
 	var err error
 	switch mt {
 	case MarshalTypeZSTDNearestDelta:
